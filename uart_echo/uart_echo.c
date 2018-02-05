@@ -35,6 +35,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include "driverlib/pwm.h"
 
 //*****************************************************************************
 //
@@ -73,23 +74,23 @@ UARTIntHandler(void)
     //
     // Get the interrrupt status.
     //
-    ui32Status = ROM_UARTIntStatus(UART0_BASE, true);
+    ui32Status = ROM_UARTIntStatus(UART1_BASE, true);
 
     //
     // Clear the asserted interrupts.
     //
-    ROM_UARTIntClear(UART0_BASE, ui32Status);
+    ROM_UARTIntClear(UART1_BASE, ui32Status);
 
     //
     // Loop while there are characters in the receive FIFO.
     //
-    while(ROM_UARTCharsAvail(UART0_BASE))
+    while(ROM_UARTCharsAvail(UART1_BASE))
     {
         //
         // Read the next character from the UART and write it back to the UART.
         //
-        ROM_UARTCharPutNonBlocking(UART0_BASE,
-                                   ROM_UARTCharGetNonBlocking(UART0_BASE));
+        ROM_UARTCharPutNonBlocking(UART1_BASE,
+                                   ROM_UARTCharGetNonBlocking(UART1_BASE));
 
         //
         // Blink the LED to show a character transfer is occuring.
@@ -125,7 +126,7 @@ UARTSend(const uint8_t *pui8Buffer, uint32_t ui32Count)
         //
         // Write the next character to the UART.
         //
-        ROM_UARTCharPutNonBlocking(UART0_BASE, *pui8Buffer++);
+        ROM_UARTCharPutNonBlocking(UART1_BASE, *pui8Buffer++);
     }
 }
 
@@ -142,15 +143,13 @@ main(void)
     // instructions to be used within interrupt handlers, but at the expense of
     // extra stack usage.
     //
-    ROM_FPUEnable();
-    ROM_FPULazyStackingEnable();
+    //ROM_FPUEnable();
+    //ROM_FPULazyStackingEnable();
 
     //
     // Set the clocking to run directly from the crystal.
     //
-    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
-                       SYSCTL_XTAL_16MHZ);
-
+    SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ); //40MHz
     //
     // Enable the GPIO port that is used for the on-board LED.
     //
@@ -164,8 +163,32 @@ main(void)
     //
     // Enable the peripherals used by this example.
     //
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART1);
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
+    ROM_GPIOPinConfigure(GPIO_PB6_M0PWM0);
+    ROM_GPIOPinTypePWM(GPIO_PORTB_BASE, GPIO_PIN_6); // Pin motor 1
+    ROM_GPIOPinConfigure(GPIO_PB7_M0PWM1);
+    ROM_GPIOPinTypePWM(GPIO_PORTB_BASE, GPIO_PIN_7); // Pin motor 2
+
+    ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //PWM a 1.25MHz
+
+    ROM_PWMGenConfigure(PWM0_BASE, PWM_GEN_0,PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+    ROM_PWMGenConfigure(PWM0_BASE, PWM_GEN_1, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+
+    ROM_PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, 25000);
+    ROM_PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, 25000);
+
+    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, 1000);
+    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, 1500);
+
+    ROM_PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, true);
+    ROM_PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, true);
+
+    ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_0);
+    ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_1);
 
     //
     // Enable processor interrupts.
@@ -175,22 +198,22 @@ main(void)
     //
     // Set GPIO A0 and A1 as UART pins.
     //
-    GPIOPinConfigure(GPIO_PA0_U0RX);
-    GPIOPinConfigure(GPIO_PA1_U0TX);
-    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    GPIOPinConfigure(GPIO_PB0_U1RX); // Pin TXD de bluetooth
+    GPIOPinConfigure(GPIO_PB1_U1TX); // Pin RXD de bluetooth
+    ROM_GPIOPinTypeUART(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Configure the UART for 115,200, 8-N-1 operation.
     //
-    ROM_UARTConfigSetExpClk(UART0_BASE, ROM_SysCtlClockGet(), 115200,
+    ROM_UARTConfigSetExpClk(UART1_BASE, ROM_SysCtlClockGet(), 9600,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_NONE));
 
     //
     // Enable the UART interrupt.
     //
-    ROM_IntEnable(INT_UART0);
-    ROM_UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
+    ROM_IntEnable(INT_UART1);
+    ROM_UARTIntEnable(UART1_BASE, UART_INT_RX | UART_INT_RT);
 
     //
     // Prompt for text to be entered.

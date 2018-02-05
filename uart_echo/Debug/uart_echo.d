@@ -13,6 +13,7 @@ uart_echo.obj: c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pin_map.h
 uart_echo.obj: c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/rom.h
 uart_echo.obj: c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/sysctl.h
 uart_echo.obj: c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/uart.h
+uart_echo.obj: c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pwm.h
 
 ../uart_echo.c: 
 C:/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.6.LTS/include/stdint.h: 
@@ -27,3 +28,4 @@ c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pin_map.h:
 c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/rom.h: 
 c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/sysctl.h: 
 c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/uart.h: 
+c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pwm.h: 
