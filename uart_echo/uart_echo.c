@@ -42,6 +42,49 @@
 #include "utils/cpu_usage.h"
 #include "utils/uartstdio.h"
 
+int k=0;
+int q=0;
+
+float fuerzard=0;
+float fuerzari=0;
+float fuerzaad=0;
+float fuerzaai=0;
+float fuerzad;
+float fuerzai;
+int ruedaderecha;
+int ruedaizquierda;
+char c;
+
+void calculadireccion(){
+
+
+    if(fuerzaad==0 || fuerzaai==0){
+        if(fuerzaad==0 && fuerzaai==0){
+            //Parado
+            fuerzai=0;
+            fuerzad=0;
+        }
+        else if(fuerzaad==0){
+            //Parado
+            fuerzai=200*fuerzaai; //Girar parado
+            fuerzad=200*fuerzaad;
+        }
+        else if(fuerzaai==0){
+            fuerzad=200*fuerzaad; //Girar parado
+            fuerzai=200*fuerzaai;
+        }
+    }else{
+        fuerzad=200*(fuerzaad-fuerzard);
+        fuerzai=200*(fuerzaai-fuerzari);
+    }
+    ruedaderecha=1500+fuerzad;
+    ruedaizquierda=1500-fuerzai;
+    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, ruedaderecha); //
+    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, ruedaizquierda); //
+
+}
+
+
 //*****************************************************************************
 //
 //! \addtogroup example_list
@@ -75,7 +118,6 @@ void
 UARTIntHandler(void)
 {
     uint32_t ui32Status;
-    char c;
     //
     // Get the interrrupt status.
     //
@@ -100,8 +142,45 @@ UARTIntHandler(void)
         //
         // Blink the LED to show a character transfer is occuring.
         //
-        if(c=='a'){
-            ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
+        if(c=='5'){
+            fuerzaad=0;
+            fuerzaai=0;
+        }
+        if(c=='1'){
+            fuerzaad=1;
+            fuerzaai=2;
+        }
+        if(c=='2'){
+            fuerzaad=2;
+            fuerzaai=2;
+        }
+        if(c=='3'){
+            fuerzaad=2;
+            fuerzaai=1;
+        }
+        if(c=='4'){
+            fuerzaad=1;
+            fuerzaai=-1;
+        }
+        if(c=='6'){
+            fuerzaad=-1;
+            fuerzaai=1;
+        }
+        if(c=='7'){
+            fuerzaad=-2;
+            fuerzaai=-1;
+        }
+        if(c=='8'){
+            fuerzaad=-2;
+            fuerzaai=-2;
+        }
+        if(c=='9'){
+            fuerzaad=-1;
+            fuerzaai=-2;
+        }
+        if(c=='0'){
+            fuerzaad++;
+            fuerzaai++;
         }
         //
         // Delay for 1 millisecond.  Each SysCtlDelay is about 3 clocks.
@@ -112,9 +191,15 @@ UARTIntHandler(void)
         //
         // Turn off the LED
         //
-        if(c=='b'){
-            ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
+        if(c=='a'){
+            ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_0);           // Habilitamos los generadores pwm
+            ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_1);           // Habilitamos los generadores pwm
         }
+        if(c=='b'){
+            ROM_PWMGenDisable(PWM0_BASE, PWM_GEN_0);           // Habilitamos los generadores pwm
+            ROM_PWMGenDisable(PWM0_BASE, PWM_GEN_1);           // Habilitamos los generadores pwm
+        }
+
     }
 }
 
@@ -147,6 +232,7 @@ UARTSend(const uint8_t *pui8Buffer, uint32_t ui32Count)
 void configADC_IniciaADC(void)
 {
      ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
      //ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_ADC0);
 
      //HABILITAMOS EL GPIOE
@@ -154,60 +240,100 @@ void configADC_IniciaADC(void)
      //ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOE);
      // Enable pin PE3 for ADC AIN0|AIN1|AIN2|AIN3
      ROM_GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_3);
+     ROM_GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_4);
 
 
      //CONFIGURAR SECUENCIADOR 1
-     ADCSequenceDisable(ADC0_BASE,1);
+     ROM_ADCSequenceDisable(ADC0_BASE,1);
+     ROM_ADCSequenceDisable(ADC1_BASE,1);
 
      //Configuramos la velocidad de conversion al maximo (1MS/s)
      ADCClockConfigSet(ADC0_BASE, ADC_CLOCK_RATE_FULL, 1);
-     TimerControlTrigger(TIMER4_BASE,TIMER_A, true);
-     ADCSequenceConfigure(ADC0_BASE,1, ADC_TRIGGER_TIMER,0); //Disparo software (processor trigger)
-     ADCSequenceStepConfigure(ADC0_BASE,1,0,ADC_CTL_CH3|ADC_CTL_IE |ADC_CTL_END);
-     ADCSequenceEnable(ADC0_BASE,1); //ACTIVO LA SECUENCIA
+     ROM_TimerControlTrigger(TIMER2_BASE,TIMER_A, true);
+     ROM_ADCSequenceConfigure(ADC0_BASE,1, ADC_TRIGGER_TIMER,0); //Disparo software (processor trigger)
+     ROM_ADCSequenceStepConfigure(ADC0_BASE,1,0,ADC_CTL_CH3|ADC_CTL_IE |ADC_CTL_END);
+     ROM_ADCSequenceEnable(ADC0_BASE,1); //ACTIVO LA SECUENCIA
+
+     ADCClockConfigSet(ADC1_BASE, ADC_CLOCK_RATE_FULL, 1);
+     ROM_TimerControlTrigger(TIMER3_BASE,TIMER_A, true);
+     ROM_ADCSequenceConfigure(ADC1_BASE,1, ADC_TRIGGER_TIMER,0); //Disparo software (processor trigger)
+     ROM_ADCSequenceStepConfigure(ADC1_BASE,1,0,ADC_CTL_CH9|ADC_CTL_IE |ADC_CTL_END);
+     ROM_ADCSequenceEnable(ADC1_BASE,1); //ACTIVO LA SECUENCIA
 
      //Habilita las interrupciones
-     ADCIntClear(ADC0_BASE,1);
-     ADCIntEnable(ADC0_BASE,1);
+     ROM_ADCIntClear(ADC0_BASE,1);
+     ROM_ADCIntEnable(ADC0_BASE,1);
+
+     ROM_ADCIntClear(ADC1_BASE,1);
+     ROM_ADCIntEnable(ADC1_BASE,1);
+
      //ROM_IntPrioritySet(INT_ADC0SS1,3);
-     IntEnable(INT_ADC0SS1);
-     TimerEnable(TIMER4_BASE, TIMER_A);
+     ROM_IntEnable(INT_ADC0SS1);
+     ROM_TimerEnable(TIMER2_BASE, TIMER_A);
+
+     ROM_IntEnable(INT_ADC1SS1);
+     ROM_TimerEnable(TIMER3_BASE, TIMER_A);
 
 }
 
-void configADC_ISR(void)
+void configADC_ISRTimer2(void)
 {
-   uint32_t ui32Status;
-    uint32_t muestraleida[8];
-    uint16_t muestra[8];
-    int i;
+    uint32_t ui32Status;
+    uint32_t muestraleida[20];
+    uint16_t muestra[4];
+    int i,dist;
+
 
     ui32Status = ROM_ADCIntStatus(ADC0_BASE,1, true);
     ROM_ADCIntClear(ADC0_BASE,1);//LIMPIAMOS EL FLAG DE INTERRUPCIONES
     //ADCIntClear(ADC0_BASE,1);//LIMPIAMOS EL FLAG DE INTERRUPCIONES
-    ROM_ADCSequenceDataGet(ADC0_BASE,1,muestraleida);//COGEMOS LOS DATOS GUARDADOS
+    ROM_ADCSequenceDataGet(ADC0_BASE,1,&muestraleida);//COGEMOS LOS DATOS GUARDADOS
 
     //Pasamos de 32 bits a 16 (el conversor es de 12 bits, así que sólo son significativos los bits del 0 al 11)
     //Guardamos en la cola
-    for(i=0;i<8;i++){
-    muestra[i]=muestraleida[i];
-    }
+
+        dist=(muestraleida[0]+muestraleida[1])/2;
+        if(dist<950){
+            fuerzari=0;
+        }else if(dist>950 && dist<1350){
+            fuerzari=1;
+        }else if(dist>1350 ){
+            fuerzari=2;
+        }
+
     //portEND_SWITCHING_ISR(higherPriorityTaskWoken);
 
-    if(muestra[0]<600){
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
-    }else if(muestra[0]>600 && muestra[0]<900){
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
-    }else if(muestra[0]>900 ){
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
-        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
-    }
+}
 
+void configADC_ISRTimer3(void)
+{
+    uint32_t ui32Status;
+    uint32_t muestraleida[20];
+    uint16_t muestra[1];
+    int i,dist;
+
+
+    ui32Status = ROM_ADCIntStatus(ADC1_BASE,1, true);
+    ROM_ADCIntClear(ADC1_BASE,1);//LIMPIAMOS EL FLAG DE INTERRUPCIONES
+    //ADCIntClear(ADC0_BASE,1);//LIMPIAMOS EL FLAG DE INTERRUPCIONES
+    ROM_ADCSequenceDataGet(ADC1_BASE,1,&muestraleida);//COGEMOS LOS DATOS GUARDADOS
+
+    //Pasamos de 32 bits a 16 (el conversor es de 12 bits, así que sólo son significativos los bits del 0 al 11)
+    //Guardamos en la cola
+
+
+
+        dist=(muestraleida[0]+muestraleida[1])/2;
+        if(dist<1350){
+            fuerzard=0;
+        }else if(dist>1350 && dist<2100){
+            fuerzard=1;
+        }else if(dist>2100 ){
+            fuerzard=2;
+        }
+
+
+    //portEND_SWITCHING_ISR(higherPriorityTaskWoken);
 }
 
 
@@ -231,14 +357,14 @@ main(void)
     //
 
     ROM_SysCtlPeripheralClockGating(true);
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    //ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
     //
     // Enable the GPIO pins for the LED (PF2).
     //
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+    //ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_2);
+    //ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+    //ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
 
     //
     // Enable the peripherals used by this example.
@@ -264,21 +390,27 @@ main(void)
     ROM_PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, 25000); // 25000*1/1.25MHz = 20ms periodo señal PWM
     ROM_PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, 25000); // 25000*1/1.25MHz = 20ms periodo señal PWM
 
-    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, 1000); //
+    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, 1500); //
     ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, 1500); //
 
     ROM_PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, true); // Habilitamos salida pwm
     ROM_PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, true); // Habilitamos salida pwm
 
-    ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_0);           // Habilitamos los generadores pwm
-    ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_1);           // Habilitamos los generadores pwm
+    //ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_0);           // Habilitamos los generadores pwm
+    //ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_1);           // Habilitamos los generadores pwm
 
     //Inicializa timer 2
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER4);
-    ROM_TimerConfigure(TIMER4_BASE, TIMER_CFG_PERIODIC);
-    TimerControlStall(TIMER4_BASE,TIMER_A,true);
-    ui32Period = (ROM_SysCtlClockGet()/10);
-    ROM_TimerLoadSet(TIMER4_BASE, TIMER_A, ui32Period);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER2);
+    ROM_TimerConfigure(TIMER2_BASE, TIMER_CFG_PERIODIC);
+    ROM_TimerControlStall(TIMER2_BASE,TIMER_A,true);
+    ui32Period = 2000000;
+    ROM_TimerLoadSet(TIMER2_BASE, TIMER_A, ui32Period-1);
+
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
+    ROM_TimerConfigure(TIMER3_BASE, TIMER_CFG_PERIODIC);
+    ROM_TimerControlStall(TIMER3_BASE,TIMER_A,true);
+    ui32Period = 2000000;
+    ROM_TimerLoadSet(TIMER3_BASE, TIMER_A, ui32Period-1);
     //ROM_TimerIntClear(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
     //ROM_IntEnable(INT_TIMER4A);
     //ROM_TimerIntEnable(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
@@ -314,6 +446,17 @@ main(void)
 
 
     ROM_IntMasterEnable();
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER3);
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER2);
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UART1); // Habilitamos UART para bluetooth
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOA); // Habilitamos puerto A para la UART
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOB); // Habilitamos puerto B para los motores
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_PWM0);  // Habilitamos PWM0 para un motor
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_PWM1);  // Habilitamos PWM1 para el otro motor
+
+    //SysCtlDeepSleepPowerSet(SYSCTL_FLASH_LOW_POWER||SYSCTL_SRAM_LOW_POWER);
+    ROM_SysCtlSleep();
+
     //
     // Prompt for text to be entered.
     //
@@ -324,14 +467,25 @@ main(void)
     //
     while(1)
     {
+        calculadireccion();
     }
 }
 
-void Timer4IntHandler(void)
+void Timer2IntHandler(void)
 {
     // Borra la interrupción de Timer
 
-    ROM_TimerIntClear(TIMER4_BASE, TIMER_TIMA_TIMEOUT);
+    ROM_TimerIntClear(TIMER2_BASE, TIMER_TIMA_TIMEOUT);
+
+
+
+}
+
+void Timer3IntHandler(void)
+{
+    // Borra la interrupción de Timer
+
+    ROM_TimerIntClear(TIMER2_BASE, TIMER_TIMA_TIMEOUT);
 
 
 
