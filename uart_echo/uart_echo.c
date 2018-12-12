@@ -296,9 +296,9 @@ void configADC_ISRTimer2(void)
         if(dist<950){
             fuerzari=0;
         }else if(dist>950 && dist<1350){
-            fuerzari=1;
+            fuerzari=dist-950;
         }else if(dist>1350 ){
-            fuerzari=2;
+            fuerzari=400;
         }
 
     //portEND_SWITCHING_ISR(higherPriorityTaskWoken);
@@ -326,10 +326,10 @@ void configADC_ISRTimer3(void)
         dist=(muestraleida[0]+muestraleida[1])/2;
         if(dist<1350){
             fuerzard=0;
-        }else if(dist>1350 && dist<2100){
-            fuerzard=1;
-        }else if(dist>2100 ){
-            fuerzard=2;
+        }else if(dist>1350 && dist<2150){
+            fuerzard=(dist-1350)/2;
+        }else if(dist>2150 ){
+            fuerzard=400;
         }
 
 
