@@ -318,6 +318,7 @@ void configADC_ISRTimer3(void)
     }else if(dist>2150 ){
             fuerzard=800;
 
+
     }
 }
 
