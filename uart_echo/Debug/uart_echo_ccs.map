@@ -1,32 +1,32 @@
 ******************************************************************************
-                  TI ARM Linker PC v16.9.6                     
+                  TI ARM Linker PC v18.1.2                     
 ******************************************************************************
->> Linked Mon Nov 12 18:42:51 2018
+>> Linked Sat Mar 30 09:48:33 2019
 
 OUTPUT FILE NAME:   <uart_echo.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 00000d65
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00000cf9
 
 
 MEMORY CONFIGURATION
 
          name            origin    length      used     unused   attr    fill
 ----------------------  --------  ---------  --------  --------  ----  --------
-  FLASH                 00000000   00040000  00000f38  0003f0c8  R  X
-  SRAM                  20000000   00008000  00000141  00007ebf  RW X
+  FLASH                 00000000   00040000  00000dee  0003f212  R  X
+  SRAM                  20000000   00008000  00000129  00007ed7  RW X
 
 
 SEGMENT ALLOCATION MAP
 
 run origin  load origin   length   init length attrs members
 ----------  ----------- ---------- ----------- ----- -------
-00000000    00000000    00000f38   00000f38    r-x
+00000000    00000000    00000df0   00000df0    r-x
   00000000    00000000    0000026c   0000026c    r-- .intvecs
-  0000026c    0000026c    00000c94   00000c94    r-x .text
-  00000f00    00000f00    00000038   00000038    r-- .cinit
-20000000    20000000    00000141   00000000    rw-
+  0000026c    0000026c    00000b52   00000b52    r-x .text
+  00000dc0    00000dc0    00000030   00000030    r-- .cinit
+20000000    20000000    00000129   00000000    rw-
   20000000    20000000    00000100   00000000    rw- .stack
-  20000100    20000100    00000030   00000000    rw- .data
-  20000130    20000130    00000011   00000000    rw- .bss
+  20000100    20000100    00000020   00000000    rw- .data
+  20000120    20000120    00000009   00000000    rw- .bss
 
 
 SECTION ALLOCATION MAP
@@ -37,111 +37,95 @@ section   page    origin      length       input sections
 .intvecs   0    00000000    0000026c     
                   00000000    0000026c     startup_ccs.obj (.intvecs)
 
-.text      0    0000026c    00000c94     
+.text      0    0000026c    00000b52     
                   0000026c    000002c8     uart_echo.obj (.text:main)
                   00000534    000001d0     uart_echo.obj (.text:UARTIntHandler)
-                  00000704    000001a0     uart_echo.obj (.text:calculadireccion)
-                  000008a4    00000198     uart_echo.obj (.text:configADC_IniciaADC)
-                  00000a3c    0000009c     uart_echo.obj (.text:configADC_ISRTimer2)
-                  00000ad8    0000009c     uart_echo.obj (.text:configADC_ISRTimer3)
-                  00000b74    0000009c     rtsv7M4_T_le_v4SPD16_eabi.lib : memcpy_t2.obj (.text)
-                  00000c10    0000007a                                   : memset_t2.obj (.text)
-                  00000c8a    00000002     startup_ccs.obj (.text:FaultISR)
-                  00000c8c    00000070     rtsv7M4_T_le_v4SPD16_eabi.lib : autoinit.obj (.text)
-                  00000cfc    00000068                                   : copy_decompress_lzss.obj (.text:decompress:lzss)
-                  00000d64    00000054                                   : boot.obj (.text)
-                  00000db8    00000054                                   : exit.obj (.text)
-                  00000e0c    0000004c                                   : cpy_tbl.obj (.text)
-                  00000e58    0000001c     uart_echo.obj (.text:Timer2IntHandler)
-                  00000e74    0000001c     uart_echo.obj (.text:Timer3IntHandler)
-                  00000e90    00000018     driverlib.lib : adc.obj (.text:ADCClockConfigSet)
-                  00000ea8    00000018     rtsv7M4_T_le_v4SPD16_eabi.lib : args_main.obj (.text)
-                  00000ec0    00000014                                   : _lock.obj (.text)
-                  00000ed4    0000000e                                   : copy_decompress_none.obj (.text:decompress:none)
-                  00000ee2    0000000c                                   : copy_zero_init.obj (.text:decompress:ZI)
-                  00000eee    00000006     startup_ccs.obj (.text:ResetISR)
-                  00000ef4    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : pre_init.obj (.text)
-                  00000ef8    00000002     startup_ccs.obj (.text:IntDefaultHandler)
-                  00000efa    00000002     startup_ccs.obj (.text:NmiSR)
-                  00000efc    00000002     rtsv7M4_T_le_v4SPD16_eabi.lib : mpu_init.obj (.text)
-                  00000efe    00000002                                   : startup.obj (.text)
+                  00000704    00000198     uart_echo.obj (.text:configADC_IniciaADC)
+                  0000089c    0000018c     uart_echo.obj (.text:calculadireccion)
+                  00000a28    000000c4     uart_echo.obj (.text:configADC_ISRTimer2)
+                  00000aec    000000c4     uart_echo.obj (.text:configADC_ISRTimer3)
+                  00000bb0    0000009c     rtsv7M4_T_le_v4SPD16_eabi.lib : memcpy_t2.asm.obj (.text)
+                  00000c4c    00000068                                   : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  00000cb4    00000044                                   : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit:__TI_auto_init_nobinit_nopinit)
+                  00000cf8    00000038                                   : boot_cortex_m.c.obj (.text:_c_int00_noargs:_c_int00_noargs)
+                  00000d30    0000001c     uart_echo.obj (.text:Timer2IntHandler)
+                  00000d4c    0000001c     uart_echo.obj (.text:Timer3IntHandler)
+                  00000d68    00000018     driverlib.lib : adc.obj (.text:ADCClockConfigSet)
+                  00000d80    00000012     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init_nomemset:__TI_zero_init_nomemset)
+                  00000d92    0000000e                                   : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  00000da0    0000000a     driverlib.lib : adc.obj (.text:ADCIntClear)
+                  00000daa    00000006     startup_ccs.obj (.text:ResetISR)
+                  00000db0    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : pre_init.c.obj (.text:_system_pre_init)
+                  00000db4    00000004                                   : exit.c.obj (.text:abort:abort)
+                  00000db8    00000002     startup_ccs.obj (.text:FaultISR)
+                  00000dba    00000002     startup_ccs.obj (.text:IntDefaultHandler)
+                  00000dbc    00000002     startup_ccs.obj (.text:NmiSR)
 
-.cinit     0    00000f00    00000038     
-                  00000f00    00000012     (.cinit..data.load) [load image, compression = lzss]
-                  00000f12    00000002     --HOLE-- [fill = 0]
-                  00000f14    0000000c     (__TI_handler_table)
-                  00000f20    00000008     (.cinit..bss.load) [load image, compression = zero_init]
-                  00000f28    00000010     (__TI_cinit_table)
+.cinit     0    00000dc0    00000030     
+                  00000dc0    0000000c     (__TI_handler_table)
+                  00000dcc    00000004     --HOLE-- [fill = 0]
+                  00000dd0    00000008     (.cinit..bss.load) [load image, compression = zero_init]
+                  00000dd8    00000008     (.cinit..data.load) [load image, compression = lzss]
+                  00000de0    00000010     (__TI_cinit_table)
 
 .init_array 
 *          0    00000000    00000000     UNINITIALIZED
 
+.data      0    20000100    00000020     UNINITIALIZED
+                  20000100    00000020     uart_echo.obj (.data)
+
+.bss       0    20000120    00000009     UNINITIALIZED
+                  20000120    00000004     (.common:ruedaderecha)
+                  20000124    00000004     (.common:ruedaizquierda)
+                  20000128    00000001     (.common:c)
+
 .stack     0    20000000    00000100     UNINITIALIZED
-                  20000000    00000100     --HOLE--
-
-.data      0    20000100    00000030     UNINITIALIZED
-                  20000100    00000018     uart_echo.obj (.data)
-                  20000118    0000000c     rtsv7M4_T_le_v4SPD16_eabi.lib : exit.obj (.data:$O1$$)
-                  20000124    00000008                                   : _lock.obj (.data:$O1$$)
-                  2000012c    00000004                                   : stkdepth_vars.obj (.data)
-
-.bss       0    20000130    00000011     UNINITIALIZED
-                  20000130    00000004     (.common:fuerzad)
-                  20000134    00000004     (.common:fuerzai)
-                  20000138    00000004     (.common:ruedaderecha)
-                  2000013c    00000004     (.common:ruedaizquierda)
-                  20000140    00000001     (.common:c)
+                  20000000    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : boot_cortex_m.c.obj (.stack)
+                  20000004    000000fc     --HOLE--
 
 MODULE SUMMARY
 
-       Module                     code   ro data   rw data
-       ------                     ----   -------   -------
+       Module                       code   ro data   rw data
+       ------                       ----   -------   -------
     .\
-       uart_echo.obj              2368   0         41     
-       startup_ccs.obj            12     620       0      
-    +--+--------------------------+------+---------+---------+
-       Total:                     2380   620       41     
-                                                          
-    C:\ti\ccsv7\tools\compiler\ti-cgt-arm_16.9.6.LTS\lib\rtsv7M4_T_le_v4SPD16_eabi.lib
-       memcpy_t2.obj              156    0         0      
-       memset_t2.obj              122    0         0      
-       autoinit.obj               112    0         0      
-       copy_decompress_lzss.obj   104    0         0      
-       exit.obj                   84     0         12     
-       boot.obj                   84     0         0      
-       cpy_tbl.obj                76     0         0      
-       _lock.obj                  20     0         8      
-       args_main.obj              24     0         0      
-       copy_decompress_none.obj   14     0         0      
-       copy_zero_init.obj         12     0         0      
-       pre_init.obj               4      0         0      
-       stkdepth_vars.obj          0      0         4      
-       mpu_init.obj               2      0         0      
-       startup.obj                2      0         0      
-    +--+--------------------------+------+---------+---------+
-       Total:                     816    0         24     
-                                                          
+       uart_echo.obj                2428   0         41     
+       startup_ccs.obj              12     620       0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       2440   620       41     
+                                                            
+    C:\ti\ccsv8\tools\compiler\ti-cgt-arm_18.1.2.LTS\lib\rtsv7M4_T_le_v4SPD16_eabi.lib
+       memcpy_t2.asm.obj            156    0         0      
+       copy_decompress_lzss.c.obj   104    0         0      
+       autoinit.c.obj               68     0         0      
+       boot_cortex_m.c.obj          56     0         0      
+       copy_zero_init.c.obj         18     0         0      
+       copy_decompress_none.c.obj   14     0         0      
+       exit.c.obj                   4      0         0      
+       pre_init.c.obj               4      0         0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       424    0         0      
+                                                            
     c:/ti/TivaWare_C_Series-2.1.4.178/driverlib/ccs/Debug/driverlib.lib
-       adc.obj                    24     0         0      
-    +--+--------------------------+------+---------+---------+
-       Total:                     24     0         0      
-                                                          
-       Stack:                     0      0         256    
-       Linker Generated:          0      54        0      
-    +--+--------------------------+------+---------+---------+
-       Grand Total:               3220   674       321    
+       adc.obj                      34     0         0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       34     0         0      
+                                                            
+       Stack:                       0      0         256    
+       Linker Generated:            0      44        0      
+    +--+----------------------------+------+---------+---------+
+       Grand Total:                 2898   664       297    
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 00000f28 records: 2, size/record: 8, table size: 16
-	.data: load addr=00000f00, load size=00000012 bytes, run addr=20000100, run size=00000030 bytes, compression=lzss
-	.bss: load addr=00000f20, load size=00000008 bytes, run addr=20000130, run size=00000011 bytes, compression=zero_init
+__TI_cinit_table @ 00000de0 records: 2, size/record: 8, table size: 16
+	.bss: load addr=00000dd0, load size=00000008 bytes, run addr=20000120, run size=00000009 bytes, compression=zero_init
+	.data: load addr=00000dd8, load size=00000008 bytes, run addr=20000100, run size=00000020 bytes, compression=lzss
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 00000f14 records: 3, size/record: 4, table size: 12
+__TI_handler_table @ 00000dc0 records: 3, size/record: 4, table size: 12
 	index: 0, handler: __TI_decompress_lzss
 	index: 1, handler: __TI_decompress_none
 	index: 2, handler: __TI_zero_init
@@ -149,157 +133,117 @@ __TI_handler_table @ 00000f14 records: 3, size/record: 4, table size: 12
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
 
-address   name                           
--------   ----                           
-00000e91  ADCClockConfigSet              
-00000db9  C$$EXIT                        
-00000eef  ResetISR                       
-UNDEFED   SHT$$INIT_ARRAY$$Base          
-UNDEFED   SHT$$INIT_ARRAY$$Limit         
-00000e59  Timer2IntHandler               
-00000e75  Timer3IntHandler               
-00000535  UARTIntHandler                 
-20000100  __STACK_END                    
-00000100  __STACK_SIZE                   
-20000100  __STACK_TOP                    
-00000f28  __TI_CINIT_Base                
-00000f38  __TI_CINIT_Limit               
-00000f14  __TI_Handler_Table_Base        
-00000f20  __TI_Handler_Table_Limit       
-00000c8d  __TI_auto_init                 
-20000118  __TI_cleanup_ptr               
-00000cfd  __TI_decompress_lzss           
-00000ed5  __TI_decompress_none           
-2000011c  __TI_dtors_ptr                 
-20000120  __TI_enable_exit_profile_output
-ffffffff  __TI_pprof_out_hndl            
-ffffffff  __TI_prof_data_size            
-ffffffff  __TI_prof_data_start           
-00000000  __TI_static_base__             
-00000ee3  __TI_zero_init                 
-00000c11  __aeabi_memclr                 
-00000c11  __aeabi_memclr4                
-00000c11  __aeabi_memclr8                
-00000b75  __aeabi_memcpy                 
-00000b75  __aeabi_memcpy4                
-00000b75  __aeabi_memcpy8                
-00000c13  __aeabi_memset                 
-00000c13  __aeabi_memset4                
-00000c13  __aeabi_memset8                
-ffffffff  __binit__                      
-ffffffff  __c_args__                     
-00000efd  __mpu_init                     
-20000000  __stack                        
-00000ea9  _args_main                     
-00000d65  _c_int00                       
-20000124  _lock                          
-00000ecf  _nop                           
-00000ec7  _register_lock                 
-00000ec1  _register_unlock               
-00000eff  _system_post_cinit             
-00000ef5  _system_pre_init               
-20000128  _unlock                        
-00000dbd  abort                          
-ffffffff  binit                          
-20000140  c                              
-00000705  calculadireccion               
-00000a3d  configADC_ISRTimer2            
-00000ad9  configADC_ISRTimer3            
-000008a5  configADC_IniciaADC            
-00000e0d  copy_in                        
-00000dc5  exit                           
-20000110  fuerzaad                       
-20000114  fuerzaai                       
-20000130  fuerzad                        
-20000134  fuerzai                        
-20000108  fuerzard                       
-2000010c  fuerzari                       
-00000000  g_pfnVectors                   
-20000100  k                              
-0000026d  main                           
-2000012c  main_func_sp                   
-00000b75  memcpy                         
-00000c19  memset                         
-20000104  q                              
-20000138  ruedaderecha                   
-2000013c  ruedaizquierda                 
+address   name                          
+-------   ----                          
+00000d69  ADCClockConfigSet             
+00000da1  ADCIntClear                   
+00000db5  C$$EXIT                       
+00000dab  ResetISR                      
+00000d31  Timer2IntHandler              
+00000d4d  Timer3IntHandler              
+00000535  UARTIntHandler                
+20000100  __STACK_END                   
+00000100  __STACK_SIZE                  
+20000100  __STACK_TOP                   
+00000de0  __TI_CINIT_Base               
+00000df0  __TI_CINIT_Limit              
+00000dc0  __TI_Handler_Table_Base       
+00000dcc  __TI_Handler_Table_Limit      
+00000cb5  __TI_auto_init_nobinit_nopinit
+00000c4d  __TI_decompress_lzss          
+00000d93  __TI_decompress_none          
+ffffffff  __TI_pprof_out_hndl           
+ffffffff  __TI_prof_data_size           
+ffffffff  __TI_prof_data_start          
+00000000  __TI_static_base__            
+00000d81  __TI_zero_init_nomemset       
+00000bb1  __aeabi_memcpy                
+00000bb1  __aeabi_memcpy4               
+00000bb1  __aeabi_memcpy8               
+ffffffff  __binit__                     
+ffffffff  __c_args__                    
+UNDEFED   __mpu_init                    
+20000000  __stack                       
+00000cf9  _c_int00_noargs               
+UNDEFED   _system_post_cinit            
+00000db1  _system_pre_init              
+00000db5  abort                         
+ffffffff  binit                         
+20000128  c                             
+0000089d  calculadireccion              
+00000a29  configADC_ISRTimer2           
+00000aed  configADC_ISRTimer3           
+00000705  configADC_IniciaADC           
+20000110  fuerzaad                      
+20000114  fuerzaai                      
+20000118  fuerzad                       
+2000011c  fuerzai                       
+20000108  fuerzard                      
+2000010c  fuerzari                      
+00000000  g_pfnVectors                  
+20000100  k                             
+0000026d  main                          
+00000bb1  memcpy                        
+20000104  q                             
+20000120  ruedaderecha                  
+20000124  ruedaizquierda                
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
 
-address   name                           
--------   ----                           
-00000000  __TI_static_base__             
-00000000  g_pfnVectors                   
-00000100  __STACK_SIZE                   
-0000026d  main                           
-00000535  UARTIntHandler                 
-00000705  calculadireccion               
-000008a5  configADC_IniciaADC            
-00000a3d  configADC_ISRTimer2            
-00000ad9  configADC_ISRTimer3            
-00000b75  __aeabi_memcpy                 
-00000b75  __aeabi_memcpy4                
-00000b75  __aeabi_memcpy8                
-00000b75  memcpy                         
-00000c11  __aeabi_memclr                 
-00000c11  __aeabi_memclr4                
-00000c11  __aeabi_memclr8                
-00000c13  __aeabi_memset                 
-00000c13  __aeabi_memset4                
-00000c13  __aeabi_memset8                
-00000c19  memset                         
-00000c8d  __TI_auto_init                 
-00000cfd  __TI_decompress_lzss           
-00000d65  _c_int00                       
-00000db9  C$$EXIT                        
-00000dbd  abort                          
-00000dc5  exit                           
-00000e0d  copy_in                        
-00000e59  Timer2IntHandler               
-00000e75  Timer3IntHandler               
-00000e91  ADCClockConfigSet              
-00000ea9  _args_main                     
-00000ec1  _register_unlock               
-00000ec7  _register_lock                 
-00000ecf  _nop                           
-00000ed5  __TI_decompress_none           
-00000ee3  __TI_zero_init                 
-00000eef  ResetISR                       
-00000ef5  _system_pre_init               
-00000efd  __mpu_init                     
-00000eff  _system_post_cinit             
-00000f14  __TI_Handler_Table_Base        
-00000f20  __TI_Handler_Table_Limit       
-00000f28  __TI_CINIT_Base                
-00000f38  __TI_CINIT_Limit               
-20000000  __stack                        
-20000100  __STACK_END                    
-20000100  __STACK_TOP                    
-20000100  k                              
-20000104  q                              
-20000108  fuerzard                       
-2000010c  fuerzari                       
-20000110  fuerzaad                       
-20000114  fuerzaai                       
-20000118  __TI_cleanup_ptr               
-2000011c  __TI_dtors_ptr                 
-20000120  __TI_enable_exit_profile_output
-20000124  _lock                          
-20000128  _unlock                        
-2000012c  main_func_sp                   
-20000130  fuerzad                        
-20000134  fuerzai                        
-20000138  ruedaderecha                   
-2000013c  ruedaizquierda                 
-20000140  c                              
-ffffffff  __TI_pprof_out_hndl            
-ffffffff  __TI_prof_data_size            
-ffffffff  __TI_prof_data_start           
-ffffffff  __binit__                      
-ffffffff  __c_args__                     
-ffffffff  binit                          
-UNDEFED   SHT$$INIT_ARRAY$$Base          
-UNDEFED   SHT$$INIT_ARRAY$$Limit         
+address   name                          
+-------   ----                          
+00000000  __TI_static_base__            
+00000000  g_pfnVectors                  
+00000100  __STACK_SIZE                  
+0000026d  main                          
+00000535  UARTIntHandler                
+00000705  configADC_IniciaADC           
+0000089d  calculadireccion              
+00000a29  configADC_ISRTimer2           
+00000aed  configADC_ISRTimer3           
+00000bb1  __aeabi_memcpy                
+00000bb1  __aeabi_memcpy4               
+00000bb1  __aeabi_memcpy8               
+00000bb1  memcpy                        
+00000c4d  __TI_decompress_lzss          
+00000cb5  __TI_auto_init_nobinit_nopinit
+00000cf9  _c_int00_noargs               
+00000d31  Timer2IntHandler              
+00000d4d  Timer3IntHandler              
+00000d69  ADCClockConfigSet             
+00000d81  __TI_zero_init_nomemset       
+00000d93  __TI_decompress_none          
+00000da1  ADCIntClear                   
+00000dab  ResetISR                      
+00000db1  _system_pre_init              
+00000db5  C$$EXIT                       
+00000db5  abort                         
+00000dc0  __TI_Handler_Table_Base       
+00000dcc  __TI_Handler_Table_Limit      
+00000de0  __TI_CINIT_Base               
+00000df0  __TI_CINIT_Limit              
+20000000  __stack                       
+20000100  __STACK_END                   
+20000100  __STACK_TOP                   
+20000100  k                             
+20000104  q                             
+20000108  fuerzard                      
+2000010c  fuerzari                      
+20000110  fuerzaad                      
+20000114  fuerzaai                      
+20000118  fuerzad                       
+2000011c  fuerzai                       
+20000120  ruedaderecha                  
+20000124  ruedaizquierda                
+20000128  c                             
+ffffffff  __TI_pprof_out_hndl           
+ffffffff  __TI_prof_data_size           
+ffffffff  __TI_prof_data_start          
+ffffffff  __binit__                     
+ffffffff  __c_args__                    
+ffffffff  binit                         
+UNDEFED   __mpu_init                    
+UNDEFED   _system_post_cinit            
 
-[72 symbols]
+[52 symbols]
